@@ -1,0 +1,10 @@
+
+###> IDE & tools ###
+.classpath
+.project
+.settings
+###< IDE & tools ###
+
+bin
+target
+
