@@ -32,12 +32,12 @@ public class ClearMusicTagAction implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         if (null == this.folderSelectionComponent.getFolder() || this.folderSelectionComponent.getFolder().isBlank()) {
-            JOptionPane.showMessageDialog(this.parent, "Invalid parameters or required fields missing.");
+            JOptionPane.showMessageDialog(this.parent, "Invalid folder.");
 
             return;
         }
 
-        int confirmation = JOptionPane.showConfirmDialog(this.parent, "Confirm process ?", "Confirm", JOptionPane.YES_NO_OPTION);
+        int confirmation = JOptionPane.showConfirmDialog(this.parent, "All tags will be removed. Confirm process ?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (JOptionPane.YES_OPTION == confirmation) {
             this.counter = 0;
             this.clearTagInFolder(this.folderSelectionComponent.getFolder(), this.folderSelectionComponent.isRecurisve());

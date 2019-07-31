@@ -13,11 +13,11 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.JWindow;
 
-public class HelperWindow extends JWindow implements ActionListener
+public class HelperWindow extends JDialog implements ActionListener
 {
     private static final long serialVersionUID = 1L;
 
@@ -26,6 +26,11 @@ public class HelperWindow extends JWindow implements ActionListener
 
     public HelperWindow(Component field, JButton button, String message)
     {
+        super();
+        this.setModal(true);
+        this.setResizable(false);
+        this.setUndecorated(true);
+
         this.field = field;
         this.button = button;
 

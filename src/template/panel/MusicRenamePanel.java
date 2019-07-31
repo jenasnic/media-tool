@@ -24,7 +24,6 @@ public class MusicRenamePanel extends JPanel implements ProcessorComponentInterf
 
     protected MusicRenameInfoComponent musicInfoComponent;
     protected FolderSelectionComponent folderSelectionComponent;
-    protected JButton simulateButton;
     protected JButton renameButton;
 
     public MusicRenamePanel(JFrame parent, PreProcessor preProcessor)
@@ -34,8 +33,7 @@ public class MusicRenamePanel extends JPanel implements ProcessorComponentInterf
 
         this.folderSelectionComponent = new FolderSelectionComponent();
         this.musicInfoComponent = new MusicRenameInfoComponent();
-        this.simulateButton = new JButton("Simulate");
-        this.renameButton = new JButton("OK");
+        this.renameButton = new JButton("Rename");
 
         this.buildLayout();
         this.initActions();
@@ -67,16 +65,12 @@ public class MusicRenamePanel extends JPanel implements ProcessorComponentInterf
             new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.BOTTOM_FULL, 0, 0)
         );
 
-        JPanel buttons = new JPanel();
-        buttons.add(this.simulateButton);
-        buttons.add(this.renameButton);
-        this.add(buttons, new GridBagConstraints(0, 3, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
+        this.add(this.renameButton, new GridBagConstraints(0, 3, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.MAIN_FULL, 0, 0));
     }
 
     protected void initActions()
     {
-        this.simulateButton.addActionListener(new ProcessAction(this.parent, this, true));
-        this.renameButton.addActionListener(new ProcessAction(this.parent, this, false));
+        this.renameButton.addActionListener(new ProcessAction(this.parent, this));
     }
 
     protected String getPrefix()

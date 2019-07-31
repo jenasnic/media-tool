@@ -21,8 +21,7 @@ public class PictureSynchronizePanel extends JPanel implements ProcessorComponen
 
     protected FolderSelectionComponent referenceFolderComponent;
     protected FolderSelectionComponent targetFolderComponent;
-    protected JButton simulateButton;
-    protected JButton renameButton;
+    protected JButton synchronizeButton;
 
     public PictureSynchronizePanel(JFrame parent)
     {
@@ -58,21 +57,16 @@ public class PictureSynchronizePanel extends JPanel implements ProcessorComponen
 
         this.referenceFolderComponent = new FolderSelectionComponent("Choose reference", helpReferenceMessage, false);
         this.targetFolderComponent = new FolderSelectionComponent("Choose target", helpTargetMessage, false);
-        this.simulateButton = new JButton("Simulate");
-        this.renameButton = new JButton("OK");
+        this.synchronizeButton = new JButton("Synchronize");
 
         this.add(this.referenceFolderComponent, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
         this.add(this.targetFolderComponent, new GridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
 
-        JPanel buttons = new JPanel();
-        buttons.add(this.simulateButton);
-        buttons.add(this.renameButton);
-        this.add(buttons, new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
+        this.add(this.synchronizeButton, new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.MAIN_FULL, 0, 0));
     }
 
     protected void initActions()
     {
-        this.simulateButton.addActionListener(new ProcessAction(this.parent, this, true));
-        this.renameButton.addActionListener(new ProcessAction(this.parent, this, false));
+        this.synchronizeButton.addActionListener(new ProcessAction(this.parent, this));
     }
 }

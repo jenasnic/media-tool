@@ -17,6 +17,7 @@ import javax.swing.text.StyledDocument;
 
 import model.ProcessOperation;
 import service.processor.ProcessorInterface;
+import template.ProcessDialog;
 import template.panel.ProcessorComponentInterface;
 
 /**
@@ -27,13 +28,11 @@ public class ProcessAction implements ActionListener
 {
     protected JFrame parent;
     protected ProcessorComponentInterface renamerComponent;
-    protected boolean simulate;
 
-    public ProcessAction(JFrame parent, ProcessorComponentInterface renamerComponent, boolean simulate)
+    public ProcessAction(JFrame parent, ProcessorComponentInterface renamerComponent)
     {
         this.parent = parent;
         this.renamerComponent = renamerComponent;
-        this.simulate = simulate;
     }
 
     @Override
@@ -47,7 +46,9 @@ public class ProcessAction implements ActionListener
             return;
         }
 
-        if (this.simulate) {
+        ProcessDialog processDialog = new ProcessDialog(this.parent);
+
+        if (processDialog.isSimulate()) {
             List<ProcessOperation> renamedFiles = processor.simulate();
 
             if (0 == renamedFiles.size()) {
@@ -55,12 +56,9 @@ public class ProcessAction implements ActionListener
             } else {
                 JOptionPane.showMessageDialog(this.parent, this.generateReport(renamedFiles));
             }
-        } else {
-            int confirmation = JOptionPane.showConfirmDialog(this.parent, "Confirm process ?", "Confirm", JOptionPane.YES_NO_OPTION);
-            if (JOptionPane.YES_OPTION == confirmation) {
-                int count = processor.process();
-                JOptionPane.showMessageDialog(this.parent, String.format("%d file(s) processed", count));
-            }
+        } else if (processDialog.isProcess()) {
+            int count = processor.process();
+            JOptionPane.showMessageDialog(this.parent, String.format("%d file(s) processed", count));
         }
     }
 

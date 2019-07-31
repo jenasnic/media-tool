@@ -26,7 +26,6 @@ public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
     protected MusicTagInfoComponent musicInfoComponent;
     protected MusicGenreComponent musicGenreComponent;
     protected JButton clearButton;
-    protected JButton simulateButton;
     protected JButton tagButton;
 
     public MusicTagPanel(JFrame parent)
@@ -37,7 +36,6 @@ public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
         this.musicInfoComponent = new MusicTagInfoComponent();
         this.musicGenreComponent = new MusicGenreComponent();
         this.clearButton = new JButton("Clear");
-        this.simulateButton = new JButton("Simulate");
         this.tagButton = new JButton("Tag");
 
         this.buildLayout();
@@ -71,7 +69,6 @@ public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
 
         JPanel buttons = new JPanel();
         buttons.add(this.clearButton);
-        buttons.add(this.simulateButton);
         buttons.add(this.tagButton);
         this.add(buttons, new GridBagConstraints(0, 3, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
     }
@@ -79,7 +76,6 @@ public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
     protected void initActions()
     {
         this.clearButton.addActionListener(new ClearMusicTagAction(this.parent, this.folderSelectionComponent));
-        this.simulateButton.addActionListener(new ProcessAction(this.parent, this, true));
-        this.tagButton.addActionListener(new ProcessAction(this.parent, this, false));
+        this.tagButton.addActionListener(new ProcessAction(this.parent, this));
     }
 }

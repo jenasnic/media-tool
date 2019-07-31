@@ -19,7 +19,6 @@ public class PictureRenamePanel extends JPanel implements ProcessorComponentInte
     protected JFrame parent;
 
     protected FolderSelectionComponent folderSelectionComponent;
-    protected JButton simulateButton;
     protected JButton renameButton;
 
     public PictureRenamePanel(JFrame parent)
@@ -27,8 +26,7 @@ public class PictureRenamePanel extends JPanel implements ProcessorComponentInte
         this.parent = parent;
 
         this.folderSelectionComponent = new FolderSelectionComponent(null, null, true);
-        this.simulateButton = new JButton("Simulate");
-        this.renameButton = new JButton("OK");
+        this.renameButton = new JButton("Rename");
 
         this.buildLayout();
         this.initActions();
@@ -52,16 +50,11 @@ public class PictureRenamePanel extends JPanel implements ProcessorComponentInte
         this.setLayout(new GridBagLayout());
 
         this.add(this.folderSelectionComponent, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
-
-        JPanel buttons = new JPanel();
-        buttons.add(this.simulateButton);
-        buttons.add(this.renameButton);
-        this.add(buttons, new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
+        this.add(this.renameButton, new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.MAIN_FULL, 0, 0));
     }
 
     protected void initActions()
     {
-        this.simulateButton.addActionListener(new ProcessAction(this.parent, this, true));
-        this.renameButton.addActionListener(new ProcessAction(this.parent, this, false));
+        this.renameButton.addActionListener(new ProcessAction(this.parent, this));
     }
 }
