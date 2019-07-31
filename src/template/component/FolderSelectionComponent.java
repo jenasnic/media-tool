@@ -80,10 +80,15 @@ public class FolderSelectionComponent extends JPanel
     {
         this.browseButton.addActionListener(new ChooseDirectoryAction(this, this.folderTextField));
     }
-
+    
     public String getFolder()
     {
         return this.folderTextField.getText();
+    }
+
+    public void setFolder(String folder)
+    {
+        this.folderTextField.setText(folder);
     }
 
     public boolean isRecurisve()
