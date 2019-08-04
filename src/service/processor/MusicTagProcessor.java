@@ -2,7 +2,6 @@ package service.processor;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +13,7 @@ import filter.MusicFileFilter;
 import model.FilenameTagFormat;
 import model.OperationType;
 import model.ProcessOperation;
+import service.FileFinder;
 import service.FilenameTagBuilder;
 
 /**
@@ -22,7 +22,6 @@ import service.FilenameTagBuilder;
 public class MusicTagProcessor implements ProcessorInterface
 {
     protected String folderToProcess;
-    protected boolean recursive;
     protected String overridenArtist;
     protected String overridenAlbum;
     protected List<String> genres;
@@ -30,6 +29,7 @@ public class MusicTagProcessor implements ProcessorInterface
     protected int counter;
     protected List<ProcessOperation> operations;
     protected FilenameTagBuilder filenameTagBuilder;
+    protected FileFinder fileFinder;
 
     public MusicTagProcessor(
         String folderToProcess,
@@ -40,12 +40,12 @@ public class MusicTagProcessor implements ProcessorInterface
         List<String> genres
     ) {
         this.folderToProcess = folderToProcess;
-        this.recursive = recursive;
         this.overridenArtist = overridenArtist;
         this.overridenAlbum = overridenAlbum;
         this.genres = genres;
 
         this.filenameTagBuilder = new FilenameTagBuilder(filenameTagFormat);
+        this.fileFinder = new FileFinder(new MusicFileFilter(recursive));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MusicTagProcessor implements ProcessorInterface
 
     protected void processFolder(String folderToProcess, boolean simulate)
     {
-        File[] files = this.getSortedFiles(folderToProcess);
+        File[] files = this.fileFinder.getSortedFiles(folderToProcess);
 
         for (File file : files) {
             if (file.isDirectory()) {
@@ -105,17 +105,6 @@ public class MusicTagProcessor implements ProcessorInterface
                 }
             }
         }
-    }
-
-    protected File[] getSortedFiles(String folderToProcess)
-    {
-        File folder = new File(folderToProcess);
-
-        File[] fileArray = folder.listFiles(new MusicFileFilter(this.recursive));
-
-        Arrays.sort(fileArray, (File f1, File f2) -> (f1.getName().compareTo(f2.getName())));
-
-        return fileArray;
     }
 
     protected ID3v2 getTag(File file)

@@ -2,7 +2,6 @@ package service.processor;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -10,6 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 import filter.MusicFileFilter;
 import model.OperationType;
 import model.ProcessOperation;
+import service.FileFinder;
 import service.preprocessor.PreProcessor;
 
 /**
@@ -24,6 +24,7 @@ public class MusicRenameProcessor implements ProcessorInterface
 
     protected int counter;
     protected List<ProcessOperation> operations;
+    protected FileFinder fileFinder;
 
     public MusicRenameProcessor(String folderToProcess, String prefix, String suffix, PreProcessor preProcessor)
     {
@@ -31,6 +32,7 @@ public class MusicRenameProcessor implements ProcessorInterface
         this.prefix = prefix;
         this.suffix = suffix;
         this.preProcessor = preProcessor;
+        this.fileFinder = new FileFinder(new MusicFileFilter());
     }
 
     @Override
@@ -53,7 +55,7 @@ public class MusicRenameProcessor implements ProcessorInterface
 
     protected void processFolder(boolean simulate)
     {
-        File[] files = this.getSortedFiles();
+        File[] files = this.fileFinder.getSortedFiles(this.folderToProcess);
 
         for (File file : files) {
             String oldFilename = file.getName();
@@ -81,16 +83,5 @@ public class MusicRenameProcessor implements ProcessorInterface
         }
 
         return newFilename;
-    }
-
-    protected File[] getSortedFiles()
-    {
-        File folder = new File(this.folderToProcess);
-
-        File[] fileArray = folder.listFiles(new MusicFileFilter());
-
-        Arrays.sort(fileArray, (File f1, File f2) -> (f1.getName().compareTo(f2.getName())));
-
-        return fileArray;
     }
 }
