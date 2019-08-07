@@ -54,6 +54,6 @@ public class OperationReportComponent extends JScrollPane
 
         textPane.setCaretPosition(0);
 
-        this.setViewportView(textPane);
+        this.setViewportView(scrollPane);
     }
 }

@@ -10,12 +10,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import action.ProcessAction;
+import service.processor.AbstractProcessor;
 import service.processor.PictureSynchronizeProcessor;
-import service.processor.ProcessorInterface;
 import template.component.FolderSelectionComponent;
 import template.style.GridInsets;
 
-public class PictureSynchronizePanel extends JPanel implements ProcessorComponentInterface, ActionListener
+public class PictureSynchronizePanel extends JPanel implements ProcessorPanelInterface, ActionListener
 {
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class PictureSynchronizePanel extends JPanel implements ProcessorComponen
     }
 
     @Override
-    public ProcessorInterface getProcessor()
+    public AbstractProcessor getProcessor(boolean simulate)
     {
         if (this.referenceFolderComponent.getFolder().isEmpty()
             || this.targetFolderComponent.getFolder().isEmpty()
@@ -45,8 +45,17 @@ public class PictureSynchronizePanel extends JPanel implements ProcessorComponen
 
         return new PictureSynchronizeProcessor(
             this.referenceFolderComponent.getFolder(),
-            this.targetFolderComponent.getFolder()
+            this.targetFolderComponent.getFolder(),
+            this.parent,
+            simulate
         );
+    }
+
+    @Override
+    public boolean isProcessorValid()
+    {
+        return !this.referenceFolderComponent.getFolder().isEmpty()
+            && !this.targetFolderComponent.getFolder().isEmpty();
     }
 
     @Override

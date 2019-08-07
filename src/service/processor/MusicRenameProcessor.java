@@ -1,56 +1,61 @@
 package service.processor;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
+import javax.swing.JFrame;
 
 import org.apache.commons.io.FilenameUtils;
 
 import filter.MusicFileFilter;
 import model.OperationType;
 import model.ProcessOperation;
+import service.FileCounter;
 import service.FileFinder;
 import service.preprocessor.PreProcessor;
 
 /**
  * Allows to rename music using specified parameters and processors.
  */
-public class MusicRenameProcessor implements ProcessorInterface
+public class MusicRenameProcessor extends AbstractProcessor
 {
     protected String folderToProcess;
     protected String prefix;
     protected String suffix;
     protected PreProcessor preProcessor;
 
-    protected int counter;
-    protected List<ProcessOperation> operations;
     protected FileFinder fileFinder;
+    protected FileCounter fileCounter;
 
-    public MusicRenameProcessor(String folderToProcess, String prefix, String suffix, PreProcessor preProcessor)
-    {
+    public MusicRenameProcessor(
+        String folderToProcess,
+        String prefix,
+        String suffix,
+        PreProcessor preProcessor,
+        JFrame parent,
+        boolean simulate
+    ) {
+        super(parent, simulate);
+
         this.folderToProcess = folderToProcess;
         this.prefix = prefix;
         this.suffix = suffix;
         this.preProcessor = preProcessor;
-        this.fileFinder = new FileFinder(new MusicFileFilter());
+
+        MusicFileFilter fileFilter = new MusicFileFilter();
+        this.fileFinder = new FileFinder(fileFilter);
+        this.fileCounter = new FileCounter(fileFilter);
     }
 
     @Override
-    public List<ProcessOperation> simulate()
+    public void process()
     {
-        this.operations = new ArrayList<ProcessOperation>();
-        this.processFolder(true);
-
-        return this.operations;
+        this.processFolder(this.simulate);
     }
 
     @Override
-    public int process()
+    public int getTotalOperationCount()
     {
-        this.counter = 0;
-        this.processFolder(false);
-
-        return this.counter;
+        return this.fileCounter.countFiles(this.folderToProcess);
     }
 
     protected void processFolder(boolean simulate)
@@ -60,16 +65,21 @@ public class MusicRenameProcessor implements ProcessorInterface
         for (File file : files) {
             String oldFilename = file.getName();
             String newFilename = this.getNewFilename(oldFilename);
-            this.counter++;
 
-            if (simulate) {
-                this.operations.add(new ProcessOperation(
-                    OperationType.RENAME_FILE,
-                    String.format("Rename '%s' to '%s'", oldFilename, newFilename)
-                ));
-            } else {
-                file.renameTo(new File(String.format("%s/%s", this.folderToProcess, newFilename)));
+            boolean success = true;
+            if (!simulate) {
+                try {
+                    file.renameTo(new File(String.format("%s/%s", this.folderToProcess, newFilename)));
+                } catch (Exception e) {
+                    success = false;
+                }
             }
+
+            this.addOperation(new ProcessOperation(
+                OperationType.RENAME_FILE,
+                String.format("Rename '%s' to '%s'", oldFilename, newFilename),
+                success
+            ));
         }
     }
 

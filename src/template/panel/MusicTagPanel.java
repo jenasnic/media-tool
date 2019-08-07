@@ -9,14 +9,14 @@ import javax.swing.JPanel;
 
 import action.ClearMusicTagAction;
 import action.ProcessAction;
+import service.processor.AbstractProcessor;
 import service.processor.MusicTagProcessor;
-import service.processor.ProcessorInterface;
 import template.component.FolderSelectionComponent;
 import template.component.MusicGenreComponent;
 import template.component.MusicTagInfoComponent;
 import template.style.GridInsets;
 
-public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
+public class MusicTagPanel extends JPanel implements ProcessorPanelInterface
 {
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
     }
 
     @Override
-    public ProcessorInterface getProcessor()
+    public AbstractProcessor getProcessor(boolean simulate)
     {
         if (this.folderSelectionComponent.getFolder().isEmpty()) {
             return null;
@@ -55,8 +55,16 @@ public class MusicTagPanel extends JPanel implements ProcessorComponentInterface
             this.musicInfoComponent.getFilenameFormat(),
             this.musicInfoComponent.getOverridenArtist(),
             this.musicInfoComponent.getOverridenAlbum(),
-            this.musicGenreComponent.getSelectedGenres()
+            this.musicGenreComponent.getSelectedGenres(),
+            this.parent,
+            simulate
         );
+    }
+
+    @Override
+    public boolean isProcessorValid()
+    {
+        return !this.folderSelectionComponent.getFolder().isEmpty();
     }
 
     protected void buildLayout()

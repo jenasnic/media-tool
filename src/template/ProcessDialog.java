@@ -36,19 +36,13 @@ public class ProcessDialog extends JDialog implements ActionListener
         this.setTitle("Confirm");
         this.setLocationRelativeTo(parent);
 
-        this.result = null;
-        this.simulateButton = new JButton("Simulate");
-        this.processButton = new JButton("OK");
-        this.cancelButton = new JButton("Cancel");
-
         this.buildLayout();
         this.initActions();
-
-        this.setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
         JButton source = (JButton)e.getSource();
         this.result = source.getName();
         this.dispose();
@@ -64,8 +58,18 @@ public class ProcessDialog extends JDialog implements ActionListener
         return this.result == ProcessDialog.PROCESS;
     }
 
+    public boolean isCancel()
+    {
+        return this.result == ProcessDialog.CANCEL;
+    }
+
     protected void buildLayout()
     {
+        this.result = null;
+        this.simulateButton = new JButton("Simulate");
+        this.processButton = new JButton("OK");
+        this.cancelButton = new JButton("Cancel");
+
         this.setLayout(new GridBagLayout());
 
         this.add(new JLabel("Confirm process or simulate action ?", SwingConstants.CENTER), new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.TOP_FULL, 0, 0));

@@ -2,56 +2,86 @@ package action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker.StateValue;
 
-import model.ProcessOperation;
-import service.processor.ProcessorInterface;
+import service.processor.AbstractProcessor;
 import template.ProcessDialog;
+import template.ProgressDialog;
 import template.component.OperationReportComponent;
-import template.panel.ProcessorComponentInterface;
+import template.panel.ProcessorPanelInterface;
 
 /**
  * Define generic action for components that define a processor.
  * Allows to perform action or simulate it (displaying result in dialog).
  */
-public class ProcessAction implements ActionListener
+public class ProcessAction implements ActionListener, PropertyChangeListener
 {
     protected JFrame parent;
-    protected ProcessorComponentInterface renamerComponent;
+    protected ProcessorPanelInterface processorPanel;
+    protected AbstractProcessor processor;
+    protected ProcessDialog processDialog;
+    protected ProgressDialog progressDialog;
 
-    public ProcessAction(JFrame parent, ProcessorComponentInterface renamerComponent)
+    public ProcessAction(JFrame parent, ProcessorPanelInterface processorPanel)
     {
         this.parent = parent;
-        this.renamerComponent = renamerComponent;
+        this.processorPanel = processorPanel;
+        this.processDialog = new ProcessDialog(parent);
+        this.progressDialog = new ProgressDialog(parent);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
+    public void actionPerformed(ActionEvent event)
     {
-        ProcessorInterface processor = this.renamerComponent.getProcessor();
-
-        if (null == processor) {
+        if (!this.processorPanel.isProcessorValid()) {
             JOptionPane.showMessageDialog(this.parent, "Invalid parameters or required fields missing.");
 
             return;
         }
 
-        ProcessDialog processDialog = new ProcessDialog(this.parent);
+        this.processDialog.setVisible(true);
+        if (this.processDialog.isCancel()) {
+            return;
+        }
 
-        if (processDialog.isSimulate()) {
-            List<ProcessOperation> operations = processor.simulate();
+        this.processor = this.processorPanel.getProcessor(this.processDialog.isSimulate());
+        this.processor.addPropertyChangeListener(this);
+        this.processor.execute();
 
-            if (0 == operations.size()) {
-                JOptionPane.showMessageDialog(this.parent, "No file processed");
-            } else {
-                JOptionPane.showMessageDialog(this.parent, new OperationReportComponent(operations));
+        this.progressDialog.setVisible(true);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event)
+    {
+        if (event.getNewValue() instanceof Integer) {
+            this.progressDialog.setProgress((int)event.getNewValue());
+
+            return;
+        }
+
+        if (event.getNewValue() instanceof StateValue && event.getNewValue() == StateValue.DONE) {
+            this.progressDialog.dispose();
+
+            try {
+                int count = this.processor.get().size();
+
+                if (0 == count) {
+                    JOptionPane.showMessageDialog(this.parent, "No file processed");
+                } else {
+                    if (this.processDialog.isSimulate()) {
+                        JOptionPane.showMessageDialog(this.parent, new OperationReportComponent(this.processor.get()));
+                    } else {
+                        JOptionPane.showMessageDialog(this.parent, String.format("%d file(s) processed", count));
+                    }
+                }
+            } catch (Exception ex) {
             }
-        } else if (processDialog.isProcess()) {
-            int count = processor.process();
-            JOptionPane.showMessageDialog(this.parent, String.format("%d file(s) processed", count));
         }
     }
 }

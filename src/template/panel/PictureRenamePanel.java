@@ -8,11 +8,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import action.ProcessAction;
+import service.processor.AbstractProcessor;
 import service.processor.PictureRenameProcessor;
 import template.component.FolderSelectionComponent;
 import template.style.GridInsets;
 
-public class PictureRenamePanel extends JPanel implements ProcessorComponentInterface
+public class PictureRenamePanel extends JPanel implements ProcessorPanelInterface
 {
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +34,7 @@ public class PictureRenamePanel extends JPanel implements ProcessorComponentInte
     }
 
     @Override
-    public PictureRenameProcessor getProcessor()
+    public AbstractProcessor getProcessor(boolean simulate)
     {
         if (this.folderSelectionComponent.getFolder().isEmpty()) {
             return null;
@@ -41,8 +42,16 @@ public class PictureRenamePanel extends JPanel implements ProcessorComponentInte
 
         return new PictureRenameProcessor(
             this.folderSelectionComponent.getFolder(),
-            this.folderSelectionComponent.isRecurisve()
+            this.folderSelectionComponent.isRecurisve(),
+            this.parent,
+            simulate
         );
+    }
+
+    @Override
+    public boolean isProcessorValid()
+    {
+        return !this.folderSelectionComponent.getFolder().isEmpty();
     }
 
     protected void buildLayout()

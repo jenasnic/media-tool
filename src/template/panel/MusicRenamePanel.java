@@ -9,13 +9,14 @@ import javax.swing.JPanel;
 
 import action.ProcessAction;
 import service.preprocessor.PreProcessor;
+import service.processor.AbstractProcessor;
 import service.processor.MusicRenameProcessor;
 import template.component.FolderSelectionComponent;
 import template.component.MusicRenameInfoComponent;
 import template.component.PreProcessorComponent;
 import template.style.GridInsets;
 
-public class MusicRenamePanel extends JPanel implements ProcessorComponentInterface
+public class MusicRenamePanel extends JPanel implements ProcessorPanelInterface
 {
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +41,7 @@ public class MusicRenamePanel extends JPanel implements ProcessorComponentInterf
     }
 
     @Override
-    public MusicRenameProcessor getProcessor()
+    public AbstractProcessor getProcessor(boolean simulate)
     {
         if (this.folderSelectionComponent.getFolder().isEmpty()) {
             return null;
@@ -50,8 +51,16 @@ public class MusicRenamePanel extends JPanel implements ProcessorComponentInterf
             this.folderSelectionComponent.getFolder(),
             this.getPrefix(),
             this.getSuffix(),
-            this.preProcessor
+            this.preProcessor,
+            this.parent,
+            simulate
         );
+    }
+
+    @Override
+    public boolean isProcessorValid()
+    {
+        return !this.folderSelectionComponent.getFolder().isEmpty();
     }
 
     protected void buildLayout()

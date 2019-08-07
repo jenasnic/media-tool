@@ -5,46 +5,50 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import org.apache.commons.io.FilenameUtils;
 
 import filter.PictureFileFilter;
 import model.OperationType;
 import model.ProcessOperation;
+import service.FileCounter;
 
 /**
  * Allows to synchronize two folders removing files from target folder that doesn't exist in reference folder.
  * NOTE : comparison is made on filename ignoring extension.
  */
-public class PictureSynchronizeProcessor implements ProcessorInterface
+public class PictureSynchronizeProcessor extends AbstractProcessor
 {
     protected String referenceFolder;
     protected String targetFolder;
 
-    protected int counter;
-    protected List<ProcessOperation> operations;
+    protected FileCounter fileCounter;
 
-    public PictureSynchronizeProcessor(String referenceFolder, String targetFolder)
-    {
+    public PictureSynchronizeProcessor(
+        String referenceFolder,
+        String targetFolder,
+        JFrame parent,
+        boolean simulate
+    ) {
+        super(parent, simulate);
+
         this.referenceFolder = referenceFolder;
         this.targetFolder = targetFolder;
+
+        this.fileCounter = new FileCounter(new PictureFileFilter());
     }
 
     @Override
-    public List<ProcessOperation> simulate()
+    public void process()
     {
-        this.operations = new ArrayList<ProcessOperation>();
-        this.processFolder(true);
-
-        return this.operations;
+        this.processFolder(this.simulate);
     }
 
     @Override
-    public int process()
+    public int getTotalOperationCount()
     {
-        this.counter = 0;
-        this.processFolder(false);
-
-        return this.counter;
+        return this.fileCounter.countFiles(this.targetFolder);
     }
 
     protected void processFolder(boolean simulate)
@@ -58,15 +62,26 @@ public class PictureSynchronizeProcessor implements ProcessorInterface
         for (File file : files) {
             String filename = FilenameUtils.getBaseName(file.getName());
             if (!referenceFilenames.contains(filename)) {
-                this.counter++;
-                if (simulate) {
-                    this.operations.add(new ProcessOperation(
-                        OperationType.REMOVE_FILE,
-                        String.format("Remove file '%s'", file.getName())
-                    ));
-                } else {
-                    file.delete();
+                boolean success = true;
+                if (!simulate) {
+                    try {
+                        file.delete();
+                    } catch (Exception e) {
+                        success = false;
+                    }
                 }
+
+                this.addOperation(new ProcessOperation(
+                    OperationType.REMOVE_FILE,
+                    String.format("Remove file '%s'", file.getName()),
+                    success
+                ));
+            } else {
+                this.addOperation(new ProcessOperation(
+                    OperationType.IGNORE,
+                    String.format("Ignore file '%s'", file.getName()),
+                    true
+                ));
             }
         }
     }

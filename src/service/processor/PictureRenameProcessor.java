@@ -2,13 +2,13 @@ package service.processor;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import javax.swing.JFrame;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -19,43 +19,46 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import filter.PictureFileFilter;
 import model.OperationType;
 import model.ProcessOperation;
+import service.FileCounter;
 import service.FileFinder;
 
 /**
  * Allows to rename picture using tag (taken date) or last modification date.
  */
-public class PictureRenameProcessor implements ProcessorInterface
+public class PictureRenameProcessor extends AbstractProcessor
 {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
     protected String folderToProcess;
 
-    protected int counter;
-    protected List<ProcessOperation> operations;
     protected FileFinder fileFinder;
+    protected FileCounter fileCounter;
 
-    public PictureRenameProcessor(String folderToProcess, boolean recursive)
-    {
+    public PictureRenameProcessor(
+        String folderToProcess,
+        boolean recursive,
+        JFrame parent,
+        boolean simulate
+    ) {
+        super(parent, simulate);
+
         this.folderToProcess = folderToProcess;
-        this.fileFinder = new FileFinder(new PictureFileFilter(recursive));
+
+        PictureFileFilter fileFilter = new PictureFileFilter(recursive);
+        this.fileFinder = new FileFinder(fileFilter);
+        this.fileCounter = new FileCounter(fileFilter);
     }
 
     @Override
-    public List<ProcessOperation> simulate()
+    public void process()
     {
-        this.operations = new ArrayList<ProcessOperation>();
-        this.processFolder(this.folderToProcess, true);
-
-        return this.operations;
+        this.processFolder(this.folderToProcess, this.simulate);
     }
 
     @Override
-    public int process()
+    public int getTotalOperationCount()
     {
-        this.counter = 0;
-        this.processFolder(this.folderToProcess, false);
-
-        return this.counter;
+        return this.fileCounter.countFiles(this.folderToProcess);
     }
 
     protected void processFolder(String folderToProcess, boolean simulate)
@@ -68,16 +71,21 @@ public class PictureRenameProcessor implements ProcessorInterface
                 this.processFolder(file.getAbsolutePath(), simulate);
             } else if (file.isFile()) {
                 String newFilename = this.getNewFilename(file, filenameIndexMap);
-                this.counter++;
 
-                if (simulate) {
-                    this.operations.add(new ProcessOperation(
-                        OperationType.RENAME_FILE,
-                        String.format("Rename '%s' to '%s'", file.getName(), newFilename)
-                    ));
-                } else {
-                    file.renameTo(new File(String.format("%s/%s", folderToProcess, newFilename)));
+                boolean success = true;
+                if (!simulate) {
+                    try {
+                        file.renameTo(new File(String.format("%s/%s", folderToProcess, newFilename)));
+                    } catch (Exception e) {
+                        success = false;
+                    }
                 }
+
+                this.addOperation(new ProcessOperation(
+                    OperationType.RENAME_FILE,
+                    String.format("Rename '%s' to '%s'", file.getName(), newFilename),
+                    success
+                ));
             }
         }
     }

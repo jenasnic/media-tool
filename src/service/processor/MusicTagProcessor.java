@@ -1,9 +1,10 @@
 package service.processor;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.swing.JFrame;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
@@ -13,23 +14,23 @@ import filter.MusicFileFilter;
 import model.FilenameTagFormat;
 import model.OperationType;
 import model.ProcessOperation;
+import service.FileCounter;
 import service.FileFinder;
 import service.FilenameTagBuilder;
 
 /**
  * Allows to tag music using specified properties.
  */
-public class MusicTagProcessor implements ProcessorInterface
+public class MusicTagProcessor extends AbstractProcessor
 {
     protected String folderToProcess;
     protected String overridenArtist;
     protected String overridenAlbum;
     protected List<String> genres;
 
-    protected int counter;
-    protected List<ProcessOperation> operations;
     protected FilenameTagBuilder filenameTagBuilder;
     protected FileFinder fileFinder;
+    protected FileCounter fileCounter;
 
     public MusicTagProcessor(
         String folderToProcess,
@@ -37,33 +38,34 @@ public class MusicTagProcessor implements ProcessorInterface
         FilenameTagFormat filenameTagFormat,
         String overridenArtist,
         String overridenAlbum,
-        List<String> genres
+        List<String> genres,
+        JFrame parent,
+        boolean simulate
     ) {
+        super(parent, simulate);
+
         this.folderToProcess = folderToProcess;
         this.overridenArtist = overridenArtist;
         this.overridenAlbum = overridenAlbum;
         this.genres = genres;
 
         this.filenameTagBuilder = new FilenameTagBuilder(filenameTagFormat);
-        this.fileFinder = new FileFinder(new MusicFileFilter(recursive));
+
+        MusicFileFilter fileFilter = new MusicFileFilter(recursive);
+        this.fileFinder = new FileFinder(fileFilter);
+        this.fileCounter = new FileCounter(fileFilter);
     }
 
     @Override
-    public List<ProcessOperation> simulate()
+    public void process()
     {
-        this.operations = new ArrayList<ProcessOperation>();
-        this.processFolder(this.folderToProcess, true);
-
-        return this.operations;
+        this.processFolder(this.folderToProcess, this.simulate);
     }
 
     @Override
-    public int process()
+    public int getTotalOperationCount()
     {
-        this.counter = 0;
-        this.processFolder(this.folderToProcess, false);
-
-        return this.counter;
+        return this.fileCounter.countFiles(this.folderToProcess);
     }
 
     protected void processFolder(String folderToProcess, boolean simulate)
@@ -75,20 +77,9 @@ public class MusicTagProcessor implements ProcessorInterface
                 this.processFolder(file.getAbsolutePath(), simulate);
             } else if (file.isFile()) {
                 ID3v2 tag = this.getTag(file);
-                this.counter++;
 
-                if (simulate) {
-                    this.operations.add(new ProcessOperation(
-                        OperationType.ADD_TAG,
-                        String.format("Tag file '%s' :\r\n\tartist : %s\r\n\talbum : %s\r\n\ttitle : %s\r\n\tgenre : %s",
-                            file.getName(),
-                            tag.getArtist(),
-                            tag.getAlbum(),
-                            tag.getTitle(),
-                            tag.getGenreDescription()
-                        )
-                    ));
-                } else {
+                boolean success = true;
+                if (!simulate) {
                     String initialFilename = file.getPath();
                     String newFilename = String.format("%s.tagged", file.getPath());
 
@@ -101,8 +92,21 @@ public class MusicTagProcessor implements ProcessorInterface
                         File taggedFile = new File(newFilename);
                         taggedFile.renameTo(new File(initialFilename));
                     } catch (Exception e) {
+                        success = false;
                     }
                 }
+
+                this.addOperation(new ProcessOperation(
+                    OperationType.ADD_TAG,
+                    String.format("Tag file '%s' :\r\n\tartist : %s\r\n\talbum : %s\r\n\ttitle : %s\r\n\tgenre : %s",
+                        file.getName(),
+                        tag.getArtist(),
+                        tag.getAlbum(),
+                        tag.getTitle(),
+                        tag.getGenreDescription()
+                    ),
+                    success
+                ));
             }
         }
     }
