@@ -4,11 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker.StateValue;
 
+import model.ProcessOperation;
+import service.OperationLogger;
 import service.processor.MusicTagCleanProcessor;
 import template.ProgressDialog;
 import template.component.FolderSelectionComponent;
@@ -72,9 +76,22 @@ public class ClearMusicTagAction implements ActionListener, PropertyChangeListen
                     JOptionPane.showMessageDialog(this.parent, "No file processed");
                 } else {
                     JOptionPane.showMessageDialog(this.parent, String.format("%d file(s) processed", count));
+                    this.logOperations(this.processor.get());
                 }
             } catch (Exception ex) {
             }
+        }
+    }
+
+    protected void logOperations(List<ProcessOperation> operations)
+    {
+        try {
+            OperationLogger logger = OperationLogger.getLogger();
+
+            for (ProcessOperation operation : operations) {
+                logger.log(operation);
+            }
+        } catch (IOException e) {
         }
     }
 }
