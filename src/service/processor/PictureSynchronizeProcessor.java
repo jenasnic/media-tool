@@ -24,6 +24,7 @@ public class PictureSynchronizeProcessor extends AbstractProcessor
     protected String targetFolder;
 
     protected FileCounter fileCounter;
+    protected PictureFileFilter pictureFilter;
 
     public PictureSynchronizeProcessor(
         String referenceFolder,
@@ -36,7 +37,8 @@ public class PictureSynchronizeProcessor extends AbstractProcessor
         this.referenceFolder = referenceFolder;
         this.targetFolder = targetFolder;
 
-        this.fileCounter = new FileCounter(new PictureFileFilter());
+        this.pictureFilter = new PictureFileFilter(this.configuration);
+        this.fileCounter = new FileCounter(this.pictureFilter);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class PictureSynchronizeProcessor extends AbstractProcessor
         List<String> referenceFilenames = this.getReferenceFilenames();
 
         File folder = new File(this.targetFolder);
-        File[] files = folder.listFiles(new PictureFileFilter());
+        File[] files = folder.listFiles(this.pictureFilter);
         Arrays.sort(files, (File f1, File f2) -> (f1.getName().compareTo(f2.getName())));
 
         for (File file : files) {
@@ -91,7 +93,7 @@ public class PictureSynchronizeProcessor extends AbstractProcessor
         List<String> filenameList = new ArrayList<String>();
 
         File folder = new File(this.referenceFolder);
-        File[] files = folder.listFiles(new PictureFileFilter());
+        File[] files = folder.listFiles(this.pictureFilter);
 
         for (File file : files) {
             filenameList.add(FilenameUtils.getBaseName(file.getName()));

@@ -2,20 +2,20 @@ package template.panel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import action.CopyFolderAction;
 import action.ProcessAction;
+import model.Configuration;
 import service.processor.AbstractProcessor;
 import service.processor.PictureSynchronizeProcessor;
 import template.component.FolderSelectionComponent;
 import template.style.GridInsets;
 
-public class PictureSynchronizePanel extends JPanel implements ProcessorPanelInterface, ActionListener
+public class PictureSynchronizePanel extends JPanel implements ProcessorPanelInterface, ConfigurablePanelInterface
 {
     private static final long serialVersionUID = 1L;
 
@@ -59,9 +59,15 @@ public class PictureSynchronizePanel extends JPanel implements ProcessorPanelInt
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        String folder = this.referenceFolderComponent.getFolder();
-        this.targetFolderComponent.setFolder(folder);
+    public void loadConfiguration(Configuration configuration)
+    {
+        this.referenceFolderComponent.setFolder(configuration.getPictureFolderSynchronize());
+    }
+
+    @Override
+    public void saveConfiguration(Configuration configuration)
+    {
+        configuration.setPictureFolderSynchronize(this.referenceFolderComponent.getFolder());
     }
 
     protected void buildLayout()
@@ -86,7 +92,7 @@ public class PictureSynchronizePanel extends JPanel implements ProcessorPanelInt
 
     protected void initActions()
     {
-        this.copyButton.addActionListener(this);
+        this.copyButton.addActionListener(new CopyFolderAction(this.referenceFolderComponent, this.targetFolderComponent));
         this.synchronizeButton.addActionListener(new ProcessAction(this.parent, this));
     }
 }

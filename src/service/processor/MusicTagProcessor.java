@@ -51,7 +51,7 @@ public class MusicTagProcessor extends AbstractProcessor
 
         this.filenameTagBuilder = new FilenameTagBuilder(filenameTagFormat);
 
-        MusicFileFilter fileFilter = new MusicFileFilter(recursive);
+        MusicFileFilter fileFilter = new MusicFileFilter(this.configuration, recursive);
         this.fileFinder = new FileFinder(fileFilter);
         this.fileCounter = new FileCounter(fileFilter);
     }

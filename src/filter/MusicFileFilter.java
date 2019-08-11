@@ -2,8 +2,12 @@ package filter;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+
+import model.Configuration;
 
 /**
  * Default filter for music files (only mp3, flac and wma).
@@ -11,15 +15,17 @@ import org.apache.commons.io.FilenameUtils;
 public class MusicFileFilter implements FileFilter
 {
     protected boolean includeSubDirectories;
+    protected List<String> extensions;
 
-    public MusicFileFilter()
+    public MusicFileFilter(Configuration configuration)
     {
-        this(false);
+        this(configuration, false);
     }
 
-    public MusicFileFilter(boolean includeSubDirectories)
+    public MusicFileFilter(Configuration configuration, boolean includeSubDirectories)
     {
         this.includeSubDirectories = includeSubDirectories;
+        this.extensions = Arrays.asList(configuration.getMusicExtensions());
     }
 
     @Override
@@ -29,11 +35,6 @@ public class MusicFileFilter implements FileFilter
             return true;
         }
 
-        String extension = FilenameUtils.getExtension(file.getName());
-
-        return extension.equalsIgnoreCase("mp3")
-            || extension.equalsIgnoreCase("flac")
-            || extension.equalsIgnoreCase("wma")
-        ;
+        return this.extensions.contains(FilenameUtils.getExtension(file.getName()));
     }
 }

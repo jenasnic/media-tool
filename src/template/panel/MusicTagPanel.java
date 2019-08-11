@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import action.ClearMusicTagAction;
 import action.ProcessAction;
+import model.Configuration;
 import service.processor.AbstractProcessor;
 import service.processor.MusicTagProcessor;
 import template.component.FolderSelectionComponent;
@@ -16,7 +17,7 @@ import template.component.MusicGenreComponent;
 import template.component.MusicTagInfoComponent;
 import template.style.GridInsets;
 
-public class MusicTagPanel extends JPanel implements ProcessorPanelInterface
+public class MusicTagPanel extends JPanel implements ProcessorPanelInterface, ConfigurablePanelInterface
 {
     private static final long serialVersionUID = 1L;
 
@@ -31,12 +32,6 @@ public class MusicTagPanel extends JPanel implements ProcessorPanelInterface
     public MusicTagPanel(JFrame parent)
     {
         this.parent = parent;
-
-        this.folderSelectionComponent = new FolderSelectionComponent(null, null, true);
-        this.musicInfoComponent = new MusicTagInfoComponent();
-        this.musicGenreComponent = new MusicGenreComponent();
-        this.clearButton = new JButton("Clear");
-        this.tagButton = new JButton("Tag");
 
         this.buildLayout();
         this.initActions();
@@ -67,9 +62,27 @@ public class MusicTagPanel extends JPanel implements ProcessorPanelInterface
         return !this.folderSelectionComponent.getFolder().isEmpty();
     }
 
+    @Override
+    public void loadConfiguration(Configuration configuration)
+    {
+        this.folderSelectionComponent.setFolder(configuration.getMusicFolderTag());
+    }
+
+    @Override
+    public void saveConfiguration(Configuration configuration)
+    {
+        configuration.setMusicFolderTag(this.folderSelectionComponent.getFolder());
+    }
+
     protected void buildLayout()
     {
         this.setLayout(new GridBagLayout());
+
+        this.folderSelectionComponent = new FolderSelectionComponent(null, null, true);
+        this.musicInfoComponent = new MusicTagInfoComponent();
+        this.musicGenreComponent = new MusicGenreComponent();
+        this.clearButton = new JButton("Clear");
+        this.tagButton = new JButton("Tag");
 
         this.add(this.folderSelectionComponent, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.TOP_FULL, 0, 0));
         this.add(this.musicInfoComponent, new GridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MIDDLE_FULL, 0, 0));

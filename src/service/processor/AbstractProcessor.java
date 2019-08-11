@@ -6,14 +6,15 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 
+import model.Configuration;
 import model.ProcessOperation;
-import service.FileFinder;
+import service.ConfigurationRepository;
 
 public abstract class AbstractProcessor extends SwingWorker<List<ProcessOperation>, Void>
 {
+    protected Configuration configuration;
     protected JFrame parent;
     protected boolean simulate;
-    protected FileFinder fileFinder;
 
     private List<ProcessOperation> operations;
     private int totalOperationCount;
@@ -22,6 +23,8 @@ public abstract class AbstractProcessor extends SwingWorker<List<ProcessOperatio
 
     public AbstractProcessor(JFrame parent, boolean simulate)
     {
+        this.configuration = ConfigurationRepository.getInstance().get();
+
         this.parent = parent;
         this.simulate = simulate;
     }

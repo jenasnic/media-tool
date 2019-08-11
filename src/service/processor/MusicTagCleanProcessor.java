@@ -31,7 +31,7 @@ public class MusicTagCleanProcessor extends AbstractProcessor
 
         this.folderToProcess = folderToProcess;
 
-        MusicFileFilter fileFilter = new MusicFileFilter(recursive);
+        MusicFileFilter fileFilter = new MusicFileFilter(this.configuration, recursive);
         this.fileFinder = new FileFinder(fileFilter);
         this.fileCounter = new FileCounter(fileFilter);
     }

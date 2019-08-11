@@ -12,7 +12,8 @@ import model.ProcessOperation;
 
 public class OperationLogger
 {
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+    protected static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+    protected static String LOG_FILENAME = "log.txt";
 
     protected static OperationLogger operationLogger = null;
     protected Logger logger = null;
@@ -20,7 +21,10 @@ public class OperationLogger
     protected OperationLogger() throws IOException
     {
         this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        FileHandler fileHandler = new FileHandler("log.txt", true);
+
+        String logFilename = String.format("%s/%s", CurrentPathResolver.getCurrentPath(), LOG_FILENAME);
+
+        FileHandler fileHandler = new FileHandler(logFilename, true);
         fileHandler.setFormatter(new Formatter() {
             @Override
             public String format(LogRecord record) {
@@ -30,6 +34,7 @@ public class OperationLogger
                 );
             }
         });
+
         this.logger.addHandler(fileHandler);
     }
 

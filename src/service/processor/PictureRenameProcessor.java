@@ -44,7 +44,7 @@ public class PictureRenameProcessor extends AbstractProcessor
 
         this.folderToProcess = folderToProcess;
 
-        PictureFileFilter fileFilter = new PictureFileFilter(recursive);
+        PictureFileFilter fileFilter = new PictureFileFilter(this.configuration, recursive);
         this.fileFinder = new FileFinder(fileFilter);
         this.fileCounter = new FileCounter(fileFilter);
     }

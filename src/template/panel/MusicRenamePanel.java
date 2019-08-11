@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import action.ProcessAction;
+import model.Configuration;
 import service.preprocessor.PreProcessor;
 import service.processor.AbstractProcessor;
 import service.processor.MusicRenameProcessor;
@@ -16,7 +17,7 @@ import template.component.MusicRenameInfoComponent;
 import template.component.PreProcessorComponent;
 import template.style.GridInsets;
 
-public class MusicRenamePanel extends JPanel implements ProcessorPanelInterface
+public class MusicRenamePanel extends JPanel implements ProcessorPanelInterface, ConfigurablePanelInterface
 {
     private static final long serialVersionUID = 1L;
 
@@ -31,10 +32,6 @@ public class MusicRenamePanel extends JPanel implements ProcessorPanelInterface
     {
         this.parent = parent;
         this.preProcessor = preProcessor;
-
-        this.folderSelectionComponent = new FolderSelectionComponent();
-        this.musicInfoComponent = new MusicRenameInfoComponent();
-        this.renameButton = new JButton("Rename");
 
         this.buildLayout();
         this.initActions();
@@ -63,9 +60,25 @@ public class MusicRenamePanel extends JPanel implements ProcessorPanelInterface
         return !this.folderSelectionComponent.getFolder().isEmpty();
     }
 
+    @Override
+    public void loadConfiguration(Configuration configuration)
+    {
+        this.folderSelectionComponent.setFolder(configuration.getMusicFolderRename());
+    }
+
+    @Override
+    public void saveConfiguration(Configuration configuration)
+    {
+        configuration.setMusicFolderRename(this.folderSelectionComponent.getFolder());
+    }
+
     protected void buildLayout()
     {
         this.setLayout(new GridBagLayout());
+
+        this.folderSelectionComponent = new FolderSelectionComponent();
+        this.musicInfoComponent = new MusicRenameInfoComponent();
+        this.renameButton = new JButton("Rename");
 
         this.add(this.folderSelectionComponent, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.TOP_FULL, 0, 0));
         this.add(this.musicInfoComponent, new GridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MIDDLE_FULL, 0, 0));

@@ -2,8 +2,12 @@ package filter;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+
+import model.Configuration;
 
 /**
  * Default filter for picture files (only jpg, jpeg, raw, nef, mts and mp4).
@@ -11,15 +15,17 @@ import org.apache.commons.io.FilenameUtils;
 public class PictureFileFilter implements FileFilter
 {
     protected boolean includeSubDirectories;
+    protected List<String> extensions;
 
-    public PictureFileFilter()
+    public PictureFileFilter(Configuration configuration)
     {
-        this(false);
+        this(configuration, false);
     }
 
-    public PictureFileFilter(boolean includeSubDirectories)
+    public PictureFileFilter(Configuration configuration, boolean includeSubDirectories)
     {
         this.includeSubDirectories = includeSubDirectories;
+        this.extensions = Arrays.asList(configuration.getPictureExtensions());
     }
 
     @Override
@@ -29,14 +35,6 @@ public class PictureFileFilter implements FileFilter
             return true;
         }
 
-        String extension = FilenameUtils.getExtension(file.getName());
-
-        return extension.equalsIgnoreCase("jpg")
-            || extension.equalsIgnoreCase("jpeg")
-            || extension.equalsIgnoreCase("raw")
-            || extension.equalsIgnoreCase("nef")
-            || extension.equalsIgnoreCase("mts")
-            || extension.equalsIgnoreCase("mp4")
-        ;
+        return this.extensions.contains(FilenameUtils.getExtension(file.getName()));
     }
 }

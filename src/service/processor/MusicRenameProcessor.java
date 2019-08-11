@@ -41,7 +41,7 @@ public class MusicRenameProcessor extends AbstractProcessor
         this.suffix = suffix;
         this.preProcessor = preProcessor;
 
-        MusicFileFilter fileFilter = new MusicFileFilter();
+        MusicFileFilter fileFilter = new MusicFileFilter(this.configuration);
         this.fileFinder = new FileFinder(fileFilter);
         this.fileCounter = new FileCounter(fileFilter);
     }
