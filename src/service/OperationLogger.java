@@ -1,5 +1,6 @@
 package service;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.logging.FileHandler;
@@ -22,7 +23,11 @@ public class OperationLogger
     {
         this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-        String logFilename = String.format("%s/%s", CurrentPathResolver.getCurrentPath(), LOG_FILENAME);
+        String logFilename = String.format("%s%s%s",
+            CurrentPathResolver.getCurrentPath(),
+            File.separator,
+            LOG_FILENAME
+        );
 
         FileHandler fileHandler = new FileHandler(logFilename, true);
         fileHandler.setFormatter(new Formatter() {

@@ -27,7 +27,11 @@ public class ConfigurationRepository
 
     protected ConfigurationRepository()
     {
-        this.configFile = new File(String.format("%s/%s", CurrentPathResolver.getCurrentPath(), CONFIG_FILENAME));
+        this.configFile = new File(String.format("%s%s%s",
+            CurrentPathResolver.getCurrentPath(),
+            File.separator,
+            CONFIG_FILENAME
+        ));
         this.loadProperties();
     }
 

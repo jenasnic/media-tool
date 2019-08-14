@@ -12,8 +12,11 @@ public class CurrentPathResolver
             return path;
         }
 
-        File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
-        path = jarDir.getAbsolutePath();
+        try {
+            File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").toURI());
+            path = jarDir.getAbsolutePath();
+        } catch (Exception e) {
+        }
 
         return path;
     }
