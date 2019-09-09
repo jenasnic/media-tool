@@ -2,7 +2,7 @@ package filter;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -25,7 +25,11 @@ public class PictureFileFilter implements FileFilter
     public PictureFileFilter(Configuration configuration, boolean includeSubDirectories)
     {
         this.includeSubDirectories = includeSubDirectories;
-        this.extensions = Arrays.asList(configuration.getPictureExtensions());
+
+        this.extensions = new ArrayList<String>();
+        for (String extension : configuration.getPictureExtensions()) {
+            this.extensions.add(extension.toLowerCase());
+        }
     }
 
     @Override
@@ -35,6 +39,8 @@ public class PictureFileFilter implements FileFilter
             return true;
         }
 
-        return this.extensions.contains(FilenameUtils.getExtension(file.getName()));
+        String extension = FilenameUtils.getExtension(file.getName()).toLowerCase();
+
+        return this.extensions.contains(extension);
     }
 }
