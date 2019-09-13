@@ -1,5 +1,7 @@
 package service.processor;
 
+import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +69,11 @@ public class PictureSynchronizeProcessor extends AbstractProcessor
                 boolean success = true;
                 if (!simulate) {
                     try {
-                        file.delete();
+                        if (Desktop.getDesktop().isSupported(Action.MOVE_TO_TRASH)) {
+                            Desktop.getDesktop().moveToTrash(file);
+                        } else {
+                            file.delete();
+                        }
                     } catch (Exception e) {
                         success = false;
                     }

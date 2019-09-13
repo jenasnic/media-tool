@@ -18,8 +18,8 @@ public abstract class AbstractProcessor extends SwingWorker<List<ProcessOperatio
 
     private List<ProcessOperation> operations;
     private int totalOperationCount;
-    private int step;
-    private int modulo;
+    private float step;
+    private float progress;
 
     public AbstractProcessor(JFrame parent, boolean simulate)
     {
@@ -35,8 +35,8 @@ public abstract class AbstractProcessor extends SwingWorker<List<ProcessOperatio
         this.operations = new ArrayList<ProcessOperation>();
 
         this.totalOperationCount = this.getTotalOperationCount();
-        this.step = Math.max(1, (100 / this.totalOperationCount));
-        this.modulo = Math.max(1, (this.totalOperationCount / 100));
+        this.step = (float)100/this.totalOperationCount;
+        this.progress = 0;
 
         this.process();
 
@@ -53,8 +53,11 @@ public abstract class AbstractProcessor extends SwingWorker<List<ProcessOperatio
     {
         this.operations.add(processOperation);
 
-        if (this.operations.size() % this.modulo == 0) {
-            this.setProgress(this.getProgress() + this.step);
+        this.progress += this.step;
+        int tempProgress = Math.round(this.progress);
+
+        if (tempProgress > this.getProgress()) {
+            this.setProgress(Math.min(99, tempProgress));
         }
     }
 
