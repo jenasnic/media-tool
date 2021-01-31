@@ -14,6 +14,7 @@ import filter.MusicFileFilter;
 import model.FilenameTagFormat;
 import model.OperationType;
 import model.ProcessOperation;
+import model.TagType;
 import service.FileCounter;
 import service.FileFinder;
 import service.FilenameTagBuilder;
@@ -26,7 +27,9 @@ public class MusicTagProcessor extends AbstractProcessor
     protected String folderToProcess;
     protected String overridenArtist;
     protected String overridenAlbum;
+    protected boolean useFolderNameAsAlbum;
     protected List<String> genres;
+    protected boolean forceTagClear;
 
     protected FilenameTagBuilder filenameTagBuilder;
     protected FileFinder fileFinder;
@@ -38,7 +41,9 @@ public class MusicTagProcessor extends AbstractProcessor
         FilenameTagFormat filenameTagFormat,
         String overridenArtist,
         String overridenAlbum,
+        boolean useFolderNameAsAlbum,
         List<String> genres,
+        boolean forceTagClear,
         JFrame parent,
         boolean simulate
     ) {
@@ -47,7 +52,9 @@ public class MusicTagProcessor extends AbstractProcessor
         this.folderToProcess = folderToProcess;
         this.overridenArtist = overridenArtist;
         this.overridenAlbum = overridenAlbum;
+        this.useFolderNameAsAlbum = useFolderNameAsAlbum;
         this.genres = genres;
+        this.forceTagClear = forceTagClear;
 
         this.filenameTagBuilder = new FilenameTagBuilder(filenameTagFormat);
 
@@ -85,6 +92,13 @@ public class MusicTagProcessor extends AbstractProcessor
 
                     try {
                         Mp3File mp3 = new Mp3File(file);
+
+                        if (this.forceTagClear) {
+                            mp3.removeId3v1Tag();
+                            mp3.removeId3v2Tag();
+                            mp3.removeCustomTag();
+                        }
+
                         mp3.setId3v2Tag(tag);
                         mp3.save(newFilename);
 
@@ -124,6 +138,8 @@ public class MusicTagProcessor extends AbstractProcessor
 
         if (null != this.overridenAlbum && !this.overridenAlbum.isBlank()) {
             tag.setAlbum(this.overridenAlbum);
+        } else if (this.useFolderNameAsAlbum && !this.filenameTagBuilder.getFilenameTagFormat().hasTagType(TagType.ALBUM)) {
+            tag.setAlbum(file.getParentFile().getName());
         }
 
         tag.setGenreDescription(this.genres.stream().collect(Collectors.joining("\\\\")));

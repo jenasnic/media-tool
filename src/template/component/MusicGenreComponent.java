@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class MusicGenreComponent extends JPanel
 {
@@ -19,6 +20,8 @@ public class MusicGenreComponent extends JPanel
     private final static int itemsPerColumn = 6;
 
     protected List<JCheckBox> genreCheckboxList;
+
+    protected JTextField customGenre;
 
     public MusicGenreComponent()
     {
@@ -47,6 +50,8 @@ public class MusicGenreComponent extends JPanel
             this.genreCheckboxList.add(new JCheckBox(genre));
         }
 
+        this.customGenre = new JTextField();
+
         this.buildLayout();
     }
 
@@ -58,6 +63,10 @@ public class MusicGenreComponent extends JPanel
             if (genreCheckBox.isSelected()) {
                 genres.add(genreCheckBox.getText());
             }
+        }
+
+        if (!this.customGenre.getText().trim().isEmpty()) {
+            genres.add(this.customGenre.getText());
         }
 
         return genres;
@@ -80,6 +89,8 @@ public class MusicGenreComponent extends JPanel
                 gridY = 0;
             }
         }
+
+        this.add(this.customGenre, new GridBagConstraints(gridX, gridY, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }

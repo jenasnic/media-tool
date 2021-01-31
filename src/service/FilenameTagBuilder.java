@@ -41,6 +41,11 @@ public class FilenameTagBuilder
         return tag;
     }
 
+    public FilenameTagFormat getFilenameTagFormat()
+    {
+        return this.filenameTagFormat;
+    }
+
     protected void setTagPropertyValue(ID3v2 tag, TagType property, String value)
     {
         switch (property)

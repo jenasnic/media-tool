@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -26,6 +27,7 @@ public class MusicTagPanel extends JPanel implements ProcessorPanelInterface, Co
     protected FolderSelectionComponent folderSelectionComponent;
     protected MusicTagInfoComponent musicInfoComponent;
     protected MusicGenreComponent musicGenreComponent;
+    protected JCheckBox forceClearCheckbox;
     protected JButton clearButton;
     protected JButton tagButton;
 
@@ -50,7 +52,9 @@ public class MusicTagPanel extends JPanel implements ProcessorPanelInterface, Co
             this.musicInfoComponent.getFilenameFormat(),
             this.musicInfoComponent.getOverridenArtist(),
             this.musicInfoComponent.getOverridenAlbum(),
+            this.musicInfoComponent.useFolderNameAsAlbum(),
             this.musicGenreComponent.getSelectedGenres(),
+            this.forceClearCheckbox.isSelected(),
             this.parent,
             simulate
         );
@@ -81,17 +85,19 @@ public class MusicTagPanel extends JPanel implements ProcessorPanelInterface, Co
         this.folderSelectionComponent = new FolderSelectionComponent(null, null, true);
         this.musicInfoComponent = new MusicTagInfoComponent();
         this.musicGenreComponent = new MusicGenreComponent();
+        this.forceClearCheckbox = new JCheckBox("Force clear", true);
         this.clearButton = new JButton("Clear");
         this.tagButton = new JButton("Tag");
 
         this.add(this.folderSelectionComponent, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.TOP_FULL, 0, 0));
         this.add(this.musicInfoComponent, new GridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MIDDLE_FULL, 0, 0));
         this.add(this.musicGenreComponent, new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MIDDLE_FULL, 0, 0));
+        this.add(this.forceClearCheckbox, new GridBagConstraints(0, 3, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.BOTTOM_FULL, 0, 0));
 
         JPanel buttons = new JPanel();
         buttons.add(this.clearButton);
         buttons.add(this.tagButton);
-        this.add(buttons, new GridBagConstraints(0, 3, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
+        this.add(buttons, new GridBagConstraints(0, 4, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.MAIN_FULL, 0, 0));
     }
 
     protected void initActions()

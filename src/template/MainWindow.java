@@ -31,7 +31,7 @@ public class MainWindow extends JFrame
         this.configurationRepository = ConfigurationRepository.getInstance();
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(500, 500);
+        this.setSize(500, 550);
         this.setResizable(false);
         this.setTitle("Media Tool");
 

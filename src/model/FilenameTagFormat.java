@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -32,6 +33,10 @@ public class FilenameTagFormat
 
     public TagType[] getTagTypes() {
         return tagTypes;
+    }
+
+    public boolean hasTagType(TagType tagType) {
+        return Arrays.asList(this.tagTypes).contains(tagType);
     }
 
     @Override
