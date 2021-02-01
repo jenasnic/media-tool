@@ -5,13 +5,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import model.TagGenre;
 
 public class MusicGenreComponent extends JPanel
 {
@@ -25,29 +26,9 @@ public class MusicGenreComponent extends JPanel
 
     public MusicGenreComponent()
     {
-        List<String> genres = Arrays.asList(
-            "Animation",
-            "Baby",
-            "Blues Jazz",
-            "Classical",
-            "Disco Funk",
-            "Electro Lounge",
-            "French",
-            "Hard Rock",
-            "Instrumental",
-            "Latina",
-            "Misc",
-            "Oldies",
-            "Pop Dance",
-            "Soft Rock",
-            "Soul",
-            "Soundtrack",
-            "World Music"
-        );
-
         this.genreCheckboxList = new ArrayList<JCheckBox>();
-        for (String genre : genres) {
-            this.genreCheckboxList.add(new JCheckBox(genre));
+        for (TagGenre genre : TagGenre.values()) {
+            this.genreCheckboxList.add(new JCheckBox(genre.getLabel()));
         }
 
         this.customGenre = new JTextField();

@@ -1,49 +1,41 @@
 package service.processor;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import org.yaml.snakeyaml.Yaml;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.Mp3File;
 
 import filter.MusicFileFilter;
-import model.FilenameTagFormat;
 import model.OperationType;
 import model.ProcessOperation;
-import model.TagType;
+import model.YamlProperties;
 import service.FileCounter;
 import service.FileFinder;
-import service.FilenameTagBuilder;
 
 /**
- * Allows to tag music using specified properties.
+ * Allows to tag music using yaml file.
  */
-public class MusicTagProcessor extends AbstractProcessor
+public class MusicTagYamlProcessor extends AbstractProcessor
 {
     protected String folderToProcess;
-    protected String overridenArtist;
-    protected String overridenAlbum;
-    protected boolean useFolderNameAsAlbum;
-    protected List<String> genres;
+    protected String yamlFilename;
     protected boolean forceTagClear;
 
-    protected FilenameTagBuilder filenameTagBuilder;
     protected FileFinder fileFinder;
     protected FileCounter fileCounter;
 
-    public MusicTagProcessor(
+    public MusicTagYamlProcessor(
         String folderToProcess,
-        boolean recursive,
-        FilenameTagFormat filenameTagFormat,
-        String overridenArtist,
-        String overridenAlbum,
-        boolean useFolderNameAsAlbum,
-        List<String> genres,
+        String yamlFilename,
         boolean forceTagClear,
         JFrame parent,
         boolean simulate
@@ -51,15 +43,10 @@ public class MusicTagProcessor extends AbstractProcessor
         super(parent, simulate);
 
         this.folderToProcess = folderToProcess;
-        this.overridenArtist = overridenArtist;
-        this.overridenAlbum = overridenAlbum;
-        this.useFolderNameAsAlbum = useFolderNameAsAlbum;
-        this.genres = genres;
+        this.yamlFilename = yamlFilename;
         this.forceTagClear = forceTagClear;
 
-        this.filenameTagBuilder = new FilenameTagBuilder(filenameTagFormat);
-
-        MusicFileFilter fileFilter = new MusicFileFilter(this.configuration, recursive);
+        MusicFileFilter fileFilter = new MusicFileFilter(this.configuration, true);
         this.fileFinder = new FileFinder(fileFilter);
         this.fileCounter = new FileCounter(fileFilter);
     }
@@ -68,7 +55,21 @@ public class MusicTagProcessor extends AbstractProcessor
     public void process()
     {
         try {
-            this.processFolder(this.folderToProcess, this.simulate);
+            Yaml yaml = new Yaml();
+            Map<String, Object> config = yaml.load(new FileInputStream(this.yamlFilename));
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> folders = (List<Map<String, Object>>)config.get("folders");
+
+            for (Map<String, Object> folder : folders) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> folderProperties = (Map<String, Object>)folder.get("folder");
+                YamlProperties yamlProperties = YamlProperties.buildFromMap(folderProperties);
+
+                String folderPath = String.format("%s%s%s", this.folderToProcess, File.separator, yamlProperties.getName());
+
+                this.processFolder(folderPath, yamlProperties, this.simulate);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this.parent, e.getMessage());
         }
@@ -80,15 +81,15 @@ public class MusicTagProcessor extends AbstractProcessor
         return this.fileCounter.countFiles(this.folderToProcess);
     }
 
-    protected void processFolder(String folderToProcess, boolean simulate)
+    protected void processFolder(String folderToProcess, YamlProperties yamlProperties, boolean simulate)
     {
         File[] files = this.fileFinder.getSortedFiles(folderToProcess);
 
         for (File file : files) {
             if (file.isDirectory()) {
-                this.processFolder(file.getAbsolutePath(), simulate);
+                this.processFolder(file.getAbsolutePath(), yamlProperties, simulate);
             } else if (file.isFile()) {
-                ID3v2 tag = this.getTag(file);
+                ID3v2 tag = this.getTag(file, yamlProperties);
 
                 boolean success = true;
                 if (!simulate) {
@@ -130,24 +131,24 @@ public class MusicTagProcessor extends AbstractProcessor
         }
     }
 
-    protected ID3v2 getTag(File file)
+    protected ID3v2 getTag(File file, YamlProperties yamlProperties)
     {
-        ID3v2 tag = this.filenameTagBuilder.buildTag(file.getName());
+        ID3v2 tag = yamlProperties.getFilenameTagBuilder().buildTag(file.getName());
         if (null == tag) {
             tag = new ID3v24Tag();
         }
 
-        if (null != this.overridenArtist && !this.overridenArtist.isBlank()) {
-            tag.setArtist(this.overridenArtist);
+        if (null != yamlProperties.getArtist()) {
+            tag.setArtist(yamlProperties.getArtist());
         }
 
-        if (null != this.overridenAlbum && !this.overridenAlbum.isBlank()) {
-            tag.setAlbum(this.overridenAlbum);
-        } else if (this.useFolderNameAsAlbum && !this.filenameTagBuilder.getFilenameTagFormat().hasTagType(TagType.ALBUM)) {
+        if (null != yamlProperties.getAlbum()) {
+            tag.setAlbum(yamlProperties.getAlbum());
+        } else if (yamlProperties.useFolderNameAsAlbum()) {
             tag.setAlbum(file.getParentFile().getName());
         }
 
-        tag.setGenreDescription(this.genres.stream().collect(Collectors.joining("\\\\")));
+        tag.setGenreDescription(yamlProperties.getTags());
 
         return tag;
     }

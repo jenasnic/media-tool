@@ -6,6 +6,8 @@ public class Configuration
     protected String[] musicExtensions;
     protected String musicFolderRename;
     protected String musicFolderTag;
+    protected String musicYamlFolderTag;
+    protected String musicYamlFileTag;
     protected String[] pictureExtensions;
     protected String pictureFolderRename;
     protected String pictureFolderSynchronize;
@@ -40,6 +42,22 @@ public class Configuration
 
     public void setMusicFolderTag(String musicFolderTag) {
         this.musicFolderTag = musicFolderTag;
+    }
+
+    public String getMusicYamlFolderTag() {
+        return musicYamlFolderTag;
+    }
+
+    public void setMusicYamlFolderTag(String musicYamlFolderTag) {
+        this.musicYamlFolderTag = musicYamlFolderTag;
+    }
+
+    public String getMusicYamlFileTag() {
+        return musicYamlFileTag;
+    }
+
+    public void setMusicYamlFileTag(String musicYamlFileTag) {
+        this.musicYamlFileTag = musicYamlFileTag;
     }
 
     public String[] getPictureExtensions() {

@@ -3,6 +3,7 @@ package service.processor;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -49,7 +50,11 @@ public class MusicRenameProcessor extends AbstractProcessor
     @Override
     public void process()
     {
-        this.processFolder(this.simulate);
+        try {
+            this.processFolder(this.simulate);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this.parent, e.getMessage());
+        }
     }
 
     @Override

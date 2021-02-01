@@ -3,7 +3,6 @@ package template.component;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -13,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import model.FilenameTagFormat;
-import model.TagType;
 import template.style.GridInsets;
 
 public class MusicTagInfoComponent extends JPanel
@@ -66,7 +64,9 @@ public class MusicTagInfoComponent extends JPanel
             + "NOTE : This value is overriden by format or by previous field."
         ;
 
-        this.addFilenameTagFormats();
+        for (FilenameTagFormat filenameTagFormat : FilenameTagFormat.values()) {
+            this.formatComboBox.addItem(filenameTagFormat);
+        }
 
         this.add(new JLabel("Format"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, GridInsets.TOP_LEFT, 0, 0));
         this.add(this.formatComboBox, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.TOP_MIDDLE, 0, 0));
@@ -82,56 +82,5 @@ public class MusicTagInfoComponent extends JPanel
         this.add(new HelperButton(this.formatComboBox, helpFolderMessage), new GridBagConstraints(2, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.BOTTOM_RIGHT, 0, 0));
 
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-    }
-
-    protected void addFilenameTagFormats()
-    {
-        this.formatComboBox.addItem(new FilenameTagFormat(
-            "%artist% - %title%",
-            Pattern.compile(String.format("^(?<%s>[^\\-]+)\\s\\-\\s(?<%s>.+)$", TagType.ARTIST.name(), TagType.TITLE.name())),
-            new TagType[] {TagType.ARTIST, TagType.TITLE}
-        ));
-
-        this.formatComboBox.addItem(
-            new FilenameTagFormat("%album% - %title%",
-            Pattern.compile(String.format("^(?<%s>[^\\-]+)\\s\\-\\s(?<%s>.+)$", TagType.ALBUM.name(), TagType.TITLE.name())),
-            new TagType[] {TagType.ALBUM, TagType.TITLE}
-        ));
-
-        this.formatComboBox.addItem(new FilenameTagFormat(
-            "%artist% - %album% - %title%",
-            Pattern.compile(String.format("^(?<%s>[^\\-]+)\\s\\-\\s(?<%s>.+)\\s\\-\\s(?<%s>.+)$", TagType.ARTIST.name(), TagType.ALBUM.name(), TagType.TITLE.name())),
-            new TagType[] {TagType.ARTIST, TagType.ALBUM, TagType.TITLE}
-        ));
-
-        this.formatComboBox.addItem(
-            new FilenameTagFormat("%album% - %title% (%artist%)",
-            Pattern.compile(String.format("^(?<%s>[^\\-]+)\\s\\-\\s(?<%s>[^\\(]+)\\s\\((?<%s>[^\\)]+)\\)$", TagType.ALBUM.name(), TagType.TITLE.name(), TagType.ARTIST.name())),
-            new TagType[] {TagType.ALBUM, TagType.TITLE, TagType.ARTIST}
-        ));
-
-        this.formatComboBox.addItem(
-            new FilenameTagFormat("%title%",
-            Pattern.compile(String.format("^(?<%s>.+)$", TagType.TITLE.name())),
-            new TagType[] {TagType.TITLE}
-        ));
-
-        this.formatComboBox.addItem(
-            new FilenameTagFormat("%title% (%ignore%)",
-            Pattern.compile(String.format("^(?<%s>[^\\(]+)\\s\\([^\\)]+\\)$", TagType.TITLE.name())),
-            new TagType[] {TagType.TITLE}
-        ));
-
-        this.formatComboBox.addItem(
-            new FilenameTagFormat("%ignore% - %title%",
-            Pattern.compile(String.format("^[^\\-]+\\s\\-\\s(?<%s>.+)$", TagType.TITLE.name())),
-            new TagType[] {TagType.TITLE}
-        ));
-
-        this.formatComboBox.addItem(
-            new FilenameTagFormat("%ignore% - %title% (%ignore%)",
-            Pattern.compile(String.format("^[^\\-]+\\s\\-\\s(?<%s>[^\\(]+)\\s\\([^\\)]+\\)$", TagType.TITLE.name())),
-            new TagType[] {TagType.TITLE}
-        ));
     }
 }

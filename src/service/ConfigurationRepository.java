@@ -16,6 +16,8 @@ public class ConfigurationRepository
     protected static String MUSIC_EXTENSIONS = "music.extensions";
     protected static String MUSIC_FOLDER_RENAME = "music.folder.rename";
     protected static String MUSIC_FOLDER_TAG = "music.folder.tag";
+    protected static String MUSIC_YAML_FOLDER_TAG = "music.yaml.folder.tag";
+    protected static String MUSIC_YAML_FILE_TAG = "music.yaml.file.tag";
     protected static String PICTURE_EXTENSIONS = "picture.extensions";
     protected static String PICTURE_FOLDER_RENAME = "picture.folder.rename";
     protected static String PICTURE_FOLDER_SYNCHRONIZE = "picture.folder.synchronize";
@@ -52,6 +54,8 @@ public class ConfigurationRepository
         configuration.setMusicExtensions(this.properties.getProperty(MUSIC_EXTENSIONS).split(";"));
         configuration.setMusicFolderRename(this.properties.getProperty(MUSIC_FOLDER_RENAME));
         configuration.setMusicFolderTag(this.properties.getProperty(MUSIC_FOLDER_TAG));
+        configuration.setMusicYamlFolderTag(this.properties.getProperty(MUSIC_YAML_FOLDER_TAG));
+        configuration.setMusicYamlFileTag(this.properties.getProperty(MUSIC_YAML_FILE_TAG));
         configuration.setPictureExtensions(this.properties.getProperty(PICTURE_EXTENSIONS).split(";"));
         configuration.setPictureFolderRename(this.properties.getProperty(PICTURE_FOLDER_RENAME));
         configuration.setPictureFolderSynchronize(this.properties.getProperty(PICTURE_FOLDER_SYNCHRONIZE));
@@ -105,6 +109,8 @@ public class ConfigurationRepository
         this.properties.setProperty(ACTIVE_TAB, Integer.toString(configuration.getActiveTab()));
         this.properties.setProperty(MUSIC_FOLDER_RENAME, configuration.getMusicFolderRename());
         this.properties.setProperty(MUSIC_FOLDER_TAG, configuration.getMusicFolderTag());
+        this.properties.setProperty(MUSIC_YAML_FOLDER_TAG, configuration.getMusicYamlFolderTag());
+        this.properties.setProperty(MUSIC_YAML_FILE_TAG, configuration.getMusicYamlFileTag());
         this.properties.setProperty(PICTURE_FOLDER_RENAME, configuration.getPictureFolderRename());
         this.properties.setProperty(PICTURE_FOLDER_SYNCHRONIZE, configuration.getPictureFolderSynchronize());
     }

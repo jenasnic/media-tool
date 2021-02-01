@@ -3,6 +3,7 @@ package service.processor;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.mpatric.mp3agic.Mp3File;
 
@@ -39,7 +40,11 @@ public class MusicTagCleanProcessor extends AbstractProcessor
     @Override
     public void process()
     {
-        this.processFolder(this.folderToProcess);
+        try {
+            this.processFolder(this.folderToProcess);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this.parent, e.getMessage());
+        }
     }
 
     @Override

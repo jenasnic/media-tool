@@ -17,11 +17,14 @@ public class FileFinder
     {
         File folder = new File(folderToProcess);
 
+        if (!folder.exists()) {
+            throw new RuntimeException(String.format("Folder '%s' doesn't exists!", folderToProcess));
+        }
+
         File[] fileArray = folder.listFiles(this.fileFilter);
 
         Arrays.sort(fileArray, (File f1, File f2) -> (f1.getName().compareTo(f2.getName())));
 
         return fileArray;
     }
-
 }

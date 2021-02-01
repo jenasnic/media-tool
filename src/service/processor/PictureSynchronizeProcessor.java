@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -46,7 +47,11 @@ public class PictureSynchronizeProcessor extends AbstractProcessor
     @Override
     public void process()
     {
-        this.processFolder(this.simulate);
+        try {
+            this.processFolder(this.simulate);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this.parent, e.getMessage());
+        }
     }
 
     @Override

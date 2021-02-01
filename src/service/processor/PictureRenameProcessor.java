@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -52,7 +53,11 @@ public class PictureRenameProcessor extends AbstractProcessor
     @Override
     public void process()
     {
-        this.processFolder(this.folderToProcess, this.simulate);
+        try {
+            this.processFolder(this.folderToProcess, this.simulate);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this.parent, e.getMessage());
+        }
     }
 
     @Override

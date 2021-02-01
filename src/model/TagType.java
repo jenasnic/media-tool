@@ -5,5 +5,5 @@ public enum TagType
     ARTIST,
     ALBUM,
     TITLE,
-    GENRE
+    GENRE;
 }
