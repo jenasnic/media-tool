@@ -133,7 +133,7 @@ public class MusicTagYamlProcessor extends AbstractProcessor
 
     protected ID3v2 getTag(File file, YamlProperties yamlProperties)
     {
-        ID3v2 tag = yamlProperties.getFilenameTagBuilder().buildTag(file.getName());
+	ID3v24Tag tag = yamlProperties.getFilenameTagBuilder().buildTag(file.getName());
         if (null == tag) {
             tag = new ID3v24Tag();
         }

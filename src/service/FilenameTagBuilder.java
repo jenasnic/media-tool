@@ -23,7 +23,7 @@ public class FilenameTagBuilder
         this.filenameTagFormat = filenameTagFormat;
     }
 
-    public ID3v2 buildTag(String filename)
+    public ID3v24Tag buildTag(String filename)
     {
         String basename = FilenameUtils.getBaseName(filename);
 
@@ -59,9 +59,8 @@ public class FilenameTagBuilder
         case TITLE:
             tag.setTitle(value);
             break;
-        case GENRE:
-            tag.setGenreDescription(value);
-            break;
+        default:
+            throw new RuntimeException(String.format("Tag property '%s' unsupported!", property));
         }
     }
 }

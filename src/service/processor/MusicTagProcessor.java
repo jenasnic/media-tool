@@ -2,7 +2,6 @@ package service.processor;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -132,7 +131,7 @@ public class MusicTagProcessor extends AbstractProcessor
 
     protected ID3v2 getTag(File file)
     {
-        ID3v2 tag = this.filenameTagBuilder.buildTag(file.getName());
+	ID3v24Tag tag = this.filenameTagBuilder.buildTag(file.getName());
         if (null == tag) {
             tag = new ID3v24Tag();
         }
@@ -147,7 +146,7 @@ public class MusicTagProcessor extends AbstractProcessor
             tag.setAlbum(file.getParentFile().getName());
         }
 
-        tag.setGenreDescription(this.genres.stream().collect(Collectors.joining("\\\\")));
+        tag.setGenreDescription(this.genres);
 
         return tag;
     }

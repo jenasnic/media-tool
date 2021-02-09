@@ -2,7 +2,6 @@ package model;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import service.FilenameTagBuilder;
 
@@ -13,9 +12,9 @@ public class YamlProperties
     protected String artist;
     protected String album;
     protected boolean useFolderNameAsAlbum;
-    protected String tags;
+    protected List<String> tags;
 
-    private YamlProperties(String name, FilenameTagBuilder filenameTagBuilder, String artist, String album, boolean useFolderNameAsAlbum, String tags)
+    private YamlProperties(String name, FilenameTagBuilder filenameTagBuilder, String artist, String album, boolean useFolderNameAsAlbum, List<String> tags)
     {
         this.name = name;
         this.filenameTagBuilder = filenameTagBuilder;
@@ -34,7 +33,7 @@ public class YamlProperties
         String folderAlbumName = properties.containsKey("use_folder_name_as_album") ? properties.get("use_folder_name_as_album").toString() : null;
 
         @SuppressWarnings("unchecked")
-        List<String> tagList = properties.containsKey("tags") ? (List<String>)properties.get("tags") : null;
+        List<String> tags = properties.containsKey("tags") ? (List<String>)properties.get("tags") : null;
 
         FilenameTagBuilder filenameTagBuilder = null;
 
@@ -48,15 +47,12 @@ public class YamlProperties
             useFolderNameAsAlbum = Boolean.parseBoolean(folderAlbumName);
         }
 
-        String tags = null;
-        if (null != tagList) {
-            for (String genre : tagList) {
+        if (null != tags) {
+            for (String genre : tags) {
                 if (!TagGenre.exist(genre)) {
                     throw new IllegalArgumentException(String.format("Unknown tag '%s'!", genre));
                 }
             }
-
-            tags = tagList.stream().collect(Collectors.joining("\\\\"));
         }
 
         return new YamlProperties(name, filenameTagBuilder, artist, album, useFolderNameAsAlbum, tags);
@@ -82,7 +78,7 @@ public class YamlProperties
         return album;
     }
 
-    public String getTags()
+    public List<String> getTags()
     {
         return tags;
     }
