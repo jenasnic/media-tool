@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>app</groupId>
-  <artifactId>maven-project</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>media.tool</groupId>
+  <artifactId>media-tool</artifactId>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
   <name>maven-project</name>
@@ -18,17 +18,12 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.4</version>
+      <version>2.7</version>
     </dependency>
     <dependency>
       <groupId>com.drewnoakes</groupId>
       <artifactId>metadata-extractor</artifactId>
-      <version>2.11.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>1.27</version>
+      <version>2.19.0</version>
     </dependency>
   </dependencies>
 
