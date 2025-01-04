@@ -19,12 +19,12 @@ public class MusicRenameInfoComponent extends JPanel
     private static final long serialVersionUID = 1L;
 
     protected JTextField artistTextField;
-    protected JTextField additionnalInfosTextField;
+    protected JTextField additionalInfosTextField;
 
     public MusicRenameInfoComponent()
     {
         this.artistTextField = new JTextField();
-        this.additionnalInfosTextField = new JTextField();
+        this.additionalInfosTextField = new JTextField();
 
         this.buildLayout();
     }
@@ -34,9 +34,9 @@ public class MusicRenameInfoComponent extends JPanel
         return this.artistTextField.getText();
     }
 
-    public String getAdditionnalInfos()
+    public String getAdditionalInfos()
     {
-        return this.additionnalInfosTextField.getText();
+        return this.additionalInfosTextField.getText();
     }
 
     protected void buildLayout()
@@ -54,9 +54,9 @@ public class MusicRenameInfoComponent extends JPanel
         this.add(this.artistTextField, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.TOP_MIDDLE, 0, 0));
         this.add(new HelperButton(this.artistTextField, artistHelpMessage), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.TOP_RIGHT, 0, 0));
 
-        this.add(new JLabel("Additionnal infos (suffix) "), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, GridInsets.BOTTOM_LEFT, 0, 0));
-        this.add(this.additionnalInfosTextField, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.BOTTOM_MIDDLE, 0, 0));
-        this.add(new HelperButton(this.additionnalInfosTextField, additionalInfoHelpMessage), new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.BOTTOM_RIGHT, 0, 0));
+        this.add(new JLabel("Additional infos (suffix) "), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, GridInsets.BOTTOM_LEFT, 0, 0));
+        this.add(this.additionalInfosTextField, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, GridInsets.BOTTOM_MIDDLE, 0, 0));
+        this.add(new HelperButton(this.additionalInfosTextField, additionalInfoHelpMessage), new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, GridInsets.BOTTOM_RIGHT, 0, 0));
 
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }

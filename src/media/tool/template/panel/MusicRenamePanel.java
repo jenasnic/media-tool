@@ -106,8 +106,8 @@ public class MusicRenamePanel extends JPanel implements ProcessorPanelInterface,
 
     protected String getSuffix()
     {
-        if (!this.musicInfoComponent.getAdditionnalInfos().trim().isEmpty()) {
-            return String.format(" (%s)", this.musicInfoComponent.getAdditionnalInfos());
+        if (!this.musicInfoComponent.getAdditionalInfos().trim().isEmpty()) {
+            return String.format(" (%s)", this.musicInfoComponent.getAdditionalInfos());
         }
 
         return "";
