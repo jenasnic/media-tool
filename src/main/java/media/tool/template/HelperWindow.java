@@ -43,7 +43,7 @@ public class HelperWindow extends JDialog implements ActionListener
 
     protected void buildLayout(String message)
     {
-        JButton closeButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("resources/close.png")));
+        JButton closeButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("close.png")));
         closeButton.setMargin(null);
         closeButton.setBorder(null);
         closeButton.setBackground(new Color(0, 0, 0, 0));

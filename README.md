@@ -34,3 +34,11 @@ This file contains following keys:
 * `picture.extensions` picture file extensions to take into account separated with `;` (default to `jpg;jpeg;raw;nef;mts;mp4`)
 * `picture.folder.rename` last folder path used to rename pictures
 * `picture.folder.synchronize` last folder path used to synchronize pictures
+
+## Docker
+
+Generate JAR file with following command using docker :
+
+```bash
+docker-compose run --rm -w /app java mvn clean package
+```

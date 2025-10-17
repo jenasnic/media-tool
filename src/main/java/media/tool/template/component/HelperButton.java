@@ -22,7 +22,7 @@ public class HelperButton extends JButton implements ActionListener
         this.field = field;
         this.message = message;
 
-        this.setIcon(new ImageIcon(ClassLoader.getSystemResource("resources/icon.png")));
+        this.setIcon(new ImageIcon(ClassLoader.getSystemResource("icon.png")));
         this.setMargin(null);
         this.setBorder(null);
         this.setBackground(new Color(0, 0, 0, 0));

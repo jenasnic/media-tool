@@ -82,7 +82,7 @@ public class ConfigurationRepository
 
         try {
             if (!this.configFile.exists()) {
-                inputStream = ClassLoader.getSystemResourceAsStream("resources/config.ini");
+                inputStream = ClassLoader.getSystemResourceAsStream("config.ini");
             } else {
                 inputStream = new FileInputStream(this.configFile);
             }
